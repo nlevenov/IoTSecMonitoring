@@ -1,0 +1,35 @@
+# systemd unit for the monitor using the tshark backend.
+# dumpcap holds the capture capability; the monitor itself runs unprivileged:
+#   sudo groupadd --system wireshark
+#   sudo chgrp wireshark /usr/bin/dumpcap && sudo chmod 750 /usr/bin/dumpcap
+#   sudo setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap
+#   sudo useradd --system --home /opt/iotsec --groups wireshark iotsec
+[Unit]
+Description=IoT security monitor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=iotsec
+Group=iotsec
+SupplementaryGroups=wireshark
+WorkingDirectory=/opt/iotsec
+EnvironmentFile=/opt/iotsec/.env
+ExecStart=/opt/iotsec/.venv/bin/iotsec monitor --backend tshark
+Restart=on-failure
+UMask=0077
+# dumpcap needs its file capabilities, so NoNewPrivileges stays off; the rest is locked down
+ProtectSystem=strict
+ReadWritePaths=/opt/iotsec/var /opt/iotsec/models
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_PACKET AF_NETLINK
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

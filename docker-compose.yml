@@ -1,0 +1,66 @@
+# Two containers with separate privileges:
+#   monitor   - starts as root holding ONLY CAP_NET_RAW (+ SETUID/SETGID to switch
+#               user), opens the capture socket and immediately drops to the
+#               unprivileged `iotsec` user before parsing a single packet
+#   dashboard - unprivileged from the start, no capture capability at all
+services:
+  monitor:
+    build: .
+    image: iotsec:latest
+    command: ["iotsec", "monitor"]
+    user: "0:0"
+    network_mode: host          # needed to see the LAN interface
+    environment:
+      IOTSEC_CAPTURE_BACKEND: scapy
+      IOTSEC_DROP_PRIVILEGES_TO: iotsec
+      IOTSEC_INTERFACE: ${IOTSEC_INTERFACE:?set IOTSEC_INTERFACE in .env}
+      IOTSEC_NETWORKS: ${IOTSEC_NETWORKS:?set IOTSEC_NETWORKS in .env}
+      IOTSEC_GATEWAY: ${IOTSEC_GATEWAY:-}
+      IOTSEC_MODEL_KEY: ${IOTSEC_MODEL_KEY:?set IOTSEC_MODEL_KEY in .env}
+      IOTSEC_SMTP_ENABLED: ${IOTSEC_SMTP_ENABLED:-false}
+      IOTSEC_SMTP_HOST: ${IOTSEC_SMTP_HOST:-}
+      IOTSEC_SMTP_PORT: ${IOTSEC_SMTP_PORT:-465}
+      IOTSEC_SMTP_SECURITY: ${IOTSEC_SMTP_SECURITY:-ssl}
+      IOTSEC_SMTP_USER: ${IOTSEC_SMTP_USER:-}
+      IOTSEC_SMTP_PASSWORD: ${IOTSEC_SMTP_PASSWORD:-}
+      IOTSEC_SMTP_SENDER: ${IOTSEC_SMTP_SENDER:-}
+      IOTSEC_SMTP_RECIPIENTS: ${IOTSEC_SMTP_RECIPIENTS:-}
+      IOTSEC_WEBHOOK_URL: ${IOTSEC_WEBHOOK_URL:-}
+    volumes:
+      - iotsec-data:/app/var
+      - iotsec-models:/app/models
+      - ./config:/app/config:ro
+      - ./feeds:/app/feeds:ro
+    cap_drop: [ALL]
+    cap_add: [NET_RAW, SETUID, SETGID]
+    security_opt: ["no-new-privileges:true"]
+    read_only: true
+    tmpfs: [/tmp]
+    mem_limit: 1g
+    pids_limit: 128
+    restart: unless-stopped
+
+  dashboard:
+    image: iotsec:latest
+    depends_on: [monitor]
+    command: ["iotsec", "dashboard", "--host", "0.0.0.0", "--port", "8501"]
+    environment:
+      IOTSEC_DASHBOARD_PASSWORD_HASH: ${IOTSEC_DASHBOARD_PASSWORD_HASH:?run `iotsec hash-password` and set it in .env}
+      IOTSEC_ALLOWED_HOSTS: ${IOTSEC_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      IOTSEC_NETWORKS: ${IOTSEC_NETWORKS:?set IOTSEC_NETWORKS in .env}
+    ports:
+      - "127.0.0.1:8501:8501"   # localhost only - publish through the TLS proxy
+    volumes:
+      - iotsec-data:/app/var
+      - ./config:/app/config:ro
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    read_only: true
+    tmpfs: [/tmp]
+    mem_limit: 1g
+    pids_limit: 128
+    restart: unless-stopped
+
+volumes:
+  iotsec-data:
+  iotsec-models:
