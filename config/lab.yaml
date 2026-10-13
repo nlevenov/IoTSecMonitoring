@@ -1,0 +1,20 @@
+# Settings for the simulated lab network (`iotsec simulate` / `iotsec demo`).
+# Learning is shortened to 30 minutes so the staged attacks fall after it.
+database: ${IOTSEC_DATABASE:-var/lab.db}
+model_path: models/lab-anomaly.joblib
+model_signing_key: ${IOTSEC_MODEL_KEY:-}
+feeds_dir: feeds
+monitored_networks: [192.168.50.0/24]
+gateway_ip: 192.168.50.1
+capture:
+  backend: scapy
+  window_seconds: 60
+baseline:
+  learning_hours: 0.5
+  min_windows: 20
+ml:
+  min_windows: 20
+notify:
+  min_severity: high
+dashboard:
+  password_hash: ${IOTSEC_DASHBOARD_PASSWORD_HASH:-}

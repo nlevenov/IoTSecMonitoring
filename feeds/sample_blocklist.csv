@@ -1,0 +1,5 @@
+indicator,description
+203.0.113.66,Botnet C2 server (lab)
+203.0.113.128/27,Bulletproof hosting range (lab)
+c2.botnet-example.test,Botnet C2 domain (lab)
+evil-dns.test,DNS tunnelling service (lab)

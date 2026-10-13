@@ -1,0 +1,85 @@
+# iotsec configuration. ${NAME} / ${NAME:-default} are read from the
+# environment, so secrets never have to be written into this file.
+
+database: ${IOTSEC_DATABASE:-var/iotsec.db}
+model_path: models/anomaly.joblib
+# HMAC key that signs the trained model; a model that fails verification is
+# never loaded (unpickling executes code).
+model_signing_key: ${IOTSEC_MODEL_KEY:-}
+feeds_dir: feeds
+# Optional full IEEE OUI registry (https://standards-oui.ieee.org/oui/oui.csv)
+oui_file: ""
+
+# Networks this deployment owns. Only these are monitored, and active
+# discovery (ARP sweep, port probe) refuses any target outside them.
+monitored_networks: ${IOTSEC_NETWORKS:-192.168.1.0/24}   # comma separated
+gateway_ip: ${IOTSEC_GATEWAY:-192.168.1.1}
+retention_days: 30
+
+capture:
+  backend: ${IOTSEC_CAPTURE_BACKEND:-tshark}   # tshark (unprivileged via dumpcap) | scapy
+  interface: ${IOTSEC_INTERFACE:-}
+  bpf_filter: ""
+  window_seconds: 60
+  # scapy backend only: switch to this user right after opening the socket
+  drop_privileges_to: ${IOTSEC_DROP_PRIVILEGES_TO:-}
+
+discovery:
+  arp_timeout: 2.0
+  active_probe: false
+  probe_ports: [22, 23, 53, 80, 443, 554, 1883, 5000, 7547, 8008, 8080, 8443, 8883, 9999]
+  probe_timeout: 0.5
+  online_minutes: 5
+  max_devices: 2048        # cap on tracked devices (protects against MAC flooding)
+
+baseline:
+  learning_hours: 24         # devices seen in this period form the trusted inventory
+  min_windows: 30
+  max_destinations: 500
+
+detection:
+  scan_ports: 20
+  scan_hosts: 20
+  telnet_hosts: 5
+  flood_packets: 3000
+  flood_sigma: 6.0
+  exfil_bytes: 1000000
+  exfil_sigma: 6.0
+  dns_entropy: 3.8
+  dns_label_length: 30
+  dns_nxdomain: 10
+  dns_txt: 15
+  new_destinations: 5
+  lateral_ports: [22, 23, 135, 139, 445, 3389, 5900]
+
+ml:
+  enabled: true
+  contamination: 0.01
+  min_windows: 50
+  retrain_hours: 24
+  # score an anomaly must exceed beyond the model's own threshold; raises
+  # precision at the cost of missing subtle deviations
+  margin: 0.05
+
+notify:
+  min_severity: high
+  cooldown_minutes: 30
+  email:
+    enabled: ${IOTSEC_SMTP_ENABLED:-false}
+    host: ${IOTSEC_SMTP_HOST:-}
+    port: ${IOTSEC_SMTP_PORT:-465}
+    security: ${IOTSEC_SMTP_SECURITY:-ssl}   # ssl | starttls - plaintext SMTP is not supported
+    username: ${IOTSEC_SMTP_USER:-}
+    password: ${IOTSEC_SMTP_PASSWORD:-}
+    sender: ${IOTSEC_SMTP_SENDER:-}
+    recipients: ${IOTSEC_SMTP_RECIPIENTS:-}  # comma separated
+  webhook_url: ${IOTSEC_WEBHOOK_URL:-}     # https only
+
+dashboard:
+  # scrypt hash created with `iotsec hash-password`
+  password_hash: ${IOTSEC_DASHBOARD_PASSWORD_HASH:-}
+  session_minutes: 720
+  refresh_seconds: 10
+  # host names used to reach the dashboard; required when serving beyond
+  # localhost (protects against DNS rebinding)
+  allowed_hosts: ${IOTSEC_ALLOWED_HOSTS:-}   # comma separated
