@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+
+# runtime artefacts
+var/
+*.db
+*.db-wal
+*.db-shm
+*.pcap
+*.pcapng
+data/*
+!data/.gitkeep
+models/*.joblib
+models/*.sig
+models/*.tmp
+reports/
