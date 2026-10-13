@@ -1,0 +1,91 @@
+# Curated subset of IEEE OUI assignments for vendors common on home / lab
+# networks, with a device category hint. Run `iotsec import-oui oui.csv` with
+# the full registry from https://standards-oui.ieee.org/oui/oui.csv for
+# complete vendor names; hints from this file are kept.
+prefix,vendor,hint
+24:0A:C4,Espressif,iot-module
+30:AE:A4,Espressif,iot-module
+84:F3:EB,Espressif,iot-module
+5C:CF:7F,Espressif,iot-module
+18:FE:34,Espressif,iot-module
+A4:CF:12,Espressif,iot-module
+24:6F:28,Espressif,iot-module
+3C:71:BF,Espressif,iot-module
+BC:DD:C2,Espressif,iot-module
+CC:50:E3,Espressif,iot-module
+EC:FA:BC,Espressif,iot-module
+84:CC:A8,Espressif,iot-module
+8C:AA:B5,Espressif,iot-module
+C8:2B:96,Espressif,iot-module
+7C:9E:BD,Espressif,iot-module
+B8:27:EB,Raspberry Pi,computer
+DC:A6:32,Raspberry Pi,computer
+E4:5F:01,Raspberry Pi,computer
+28:CD:C1,Raspberry Pi,computer
+D8:3A:DD,Raspberry Pi,computer
+2C:CF:67,Raspberry Pi,computer
+00:17:88,Signify (Philips Hue),smart-bulb
+EC:B5:FA,Signify (Philips Hue),smart-bulb
+D0:73:D5,LIFX,smart-bulb
+44:19:B6,Hikvision,camera
+C0:56:E3,Hikvision,camera
+28:57:BE,Hikvision,camera
+4C:BD:8F,Hikvision,camera
+BC:AD:28,Hikvision,camera
+54:C4:15,Hikvision,camera
+58:03:FB,Hikvision,camera
+3C:EF:8C,Dahua,camera
+90:02:A9,Dahua,camera
+E0:50:8B,Dahua,camera
+4C:11:BF,Dahua,camera
+2C:AA:8E,Wyze,camera
+D0:3F:27,Wyze,camera
+7C:78:B2,Wyze,camera
+00:0E:58,Sonos,smart-speaker
+5C:AA:FD,Sonos,smart-speaker
+94:9F:3E,Sonos,smart-speaker
+78:28:CA,Sonos,smart-speaker
+B8:E9:37,Sonos,smart-speaker
+48:A6:B8,Sonos,smart-speaker
+18:B4:30,Nest Labs,thermostat
+64:16:66,Nest Labs,thermostat
+44:61:32,ecobee,thermostat
+F4:F5:D8,Google,smart-speaker
+54:60:09,Google,smart-speaker
+F0:27:2D,Amazon,smart-speaker
+74:C2:46,Amazon,smart-speaker
+44:65:0D,Amazon,smart-speaker
+FC:65:DE,Amazon,smart-speaker
+68:54:FD,Amazon,smart-speaker
+0C:47:C9,Amazon,smart-speaker
+84:D6:D0,Amazon,smart-speaker
+40:B4:CD,Amazon,smart-speaker
+50:DC:E7,Amazon,smart-speaker
+B0:A7:37,Roku,smart-tv
+D8:31:34,Roku,smart-tv
+CC:6D:A0,Roku,smart-tv
+AC:3A:7A,Roku,smart-tv
+94:10:3E,Belkin (Wemo),smart-plug
+EC:1A:59,Belkin (Wemo),smart-plug
+50:C7:BF,TP-Link,smart-plug
+98:DA:C4,TP-Link,router
+1C:3B:F3,TP-Link,router
+60:32:B1,TP-Link,router
+B0:4E:26,TP-Link,router
+54:AF:97,TP-Link,router
+64:09:80,Xiaomi,hub
+28:6C:07,Xiaomi,hub
+78:11:DC,Xiaomi,hub
+50:EC:50,Xiaomi,hub
+50:14:79,iRobot,appliance
+24:A4:3C,Ubiquiti,router
+78:8A:20,Ubiquiti,router
+F0:9F:C2,Ubiquiti,router
+80:2A:A8,Ubiquiti,router
+FC:EC:DA,Ubiquiti,router
+74:83:C2,Ubiquiti,router
+A0:40:A0,Netgear,router
+20:E5:2A,Netgear,router
+9C:3D:CF,Netgear,router
+C4:04:15,Netgear,router
+00:11:32,Synology,nas
